@@ -42,15 +42,26 @@ class CPU:
 
         # For now, we've just hardcoded a program:
 
-        program = [
-            # From print8.ls8
-            0b10000010,  # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111,  # PRN R0
-            0b00000000,
-            0b00000001,  # HLT
-        ]
+        # program = [
+        #     # From print8.ls8
+        #     0b10000010,  # LDI R0,8
+        #     0b00000000,
+        #     0b00001000,
+        #     0b01000111,  # PRN R0
+        #     0b00000000,
+        #     0b00000001,  # HLT
+        # ]
+
+        program = []
+
+        f = open(f'examples/{sys.argv[1]}', 'r')
+
+        for i in f.read().split('\n'):
+            if i != '' and i[0] != '#':
+                x = int(i[:8], 2)
+                program.append(x)
+
+        f.close()
 
         for instruction in program:
             self.ram[address] = instruction
@@ -110,6 +121,7 @@ class CPU:
         ldi = 0b10000010
         prn = 0b01000111
         hlt = 0b00000001
+        mul = 0b10100010
 
         # Start running the CPU
         while running:
@@ -131,6 +143,9 @@ class CPU:
             elif ir == prn:
                 print(f'{self.reg[operand_a]}')
                 self.pc += 2
+            elif ir == mul:
+                self.reg[operand_a] *= self.reg[operand_b]
+                self.pc += 3
             # HLT
             # Halt the CPU (and exit the emulator).
             elif ir == hlt:
