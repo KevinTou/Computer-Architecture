@@ -72,7 +72,10 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        # elif op == "SUB": etc
+        elif op == "SUB":
+            self.reg[reg_a] -= self.reg[reg_b]
+        elif op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -122,6 +125,8 @@ class CPU:
         prn = 0b01000111
         hlt = 0b00000001
         mul = 0b10100010
+        add = 0b10100000
+        sub = 0b10100001
 
         # Start running the CPU
         while running:
@@ -144,7 +149,13 @@ class CPU:
                 print(f'{self.reg[operand_a]}')
                 self.pc += 2
             elif ir == mul:
-                self.reg[operand_a] *= self.reg[operand_b]
+                self.alu('MUL', operand_a, operand_b)
+                self.pc += 3
+            elif ir == add:
+                self.alu('ADD', operand_a, operand_b)
+                self.pc += 3
+            elif ir == sub:
+                self.alu('SUB', operand_a, operand_b)
                 self.pc += 3
             # HLT
             # Halt the CPU (and exit the emulator).
