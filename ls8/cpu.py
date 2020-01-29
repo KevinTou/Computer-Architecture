@@ -47,14 +47,14 @@ class CPU:
 
         def PUSH(operand_a, operand_b):
             self.reg[self.SP] -= 1
-            reg_num = self.ram[self.pc + 1]
+            reg_num = operand_a
             reg_val = self.reg[reg_num]
             self.ram[self.reg[self.SP]] = reg_val
             self.pc += 2
 
         def POP(operand_a, operand_b):
             val = self.ram[self.reg[self.SP]]
-            reg_num = self.ram[self.pc + 1]
+            reg_num = operand_a
             self.reg[reg_num] = val
             self.reg[self.SP] += 1
             self.pc += 2
