@@ -59,6 +59,22 @@ class CPU:
             self.reg[self.SP] += 1
             self.pc += 2
 
+        def CALL(operand_a, operand_b):
+            # Push return address on the stack
+            return_address = self.pc + 2
+            self.reg[self.SP] -= 1  # decrement SP
+            self.ram[self.reg[self.SP]] = return_address
+
+            # Set the PC to the value in the register
+            reg_num = operand_a
+            self.pc = self.reg[reg_num]
+
+        def RET(operand_a, operand_b):
+            # Pop the return address off the stack
+            # Store it in the PC
+            self.pc = self.ram[self.reg[self.SP]]
+            self.reg[self.SP] += 1
+
         # Calls on ALU
         def MUL(operand_a, operand_b):
             self.alu('MUL', operand_a, operand_b)
@@ -75,6 +91,7 @@ class CPU:
         # Used to stop running CPU
         def HLT(operand_a, operand_b):
             self.running = False
+            self.pc += 1
 
         self.running = True
 
@@ -87,7 +104,9 @@ class CPU:
             0b10100000: ADD,
             0b10100001: SUB,
             0b01000101: PUSH,
-            0b01000110: POP
+            0b01000110: POP,
+            0b01010000: CALL,
+            0b00010001: RET
         }
 
     def load(self):
